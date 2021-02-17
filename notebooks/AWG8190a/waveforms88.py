@@ -296,18 +296,27 @@ class waveforms():
 
         tau_start *= 1e9
         tau_step *= 1e9
+        phase_correction = 360*self.awg_freq/self.sampling_rate
         arb_form = []
         laser_pause = self.zero(self.laser_pause)
 
         for i in range(step_number):
-            x_half = self.sine_space(pi_half_pulse,  360*self.awg_freq/self.sampling_rate*len(arb_form), (tau_start+tau_step*i)/2, self.awg_freq)
+            tau_space = self.zero(tau_start+tau_step*i)
+            x_half = self.sine_space(pi_half_pulse,  phase_correction*len(arb_form), (tau_start+tau_step*i)/2, self.awg_freq)
             arb_form += x_half
-            for _ in range(2):
-                KDD_partial = self.knill_pulse(pi_pulse, 0, 360*self.awg_freq/self.sampling_rate*len(arb_form), self.awg_freq, tau = tau_start+tau_step*i)
-                arb_form += KDD_partial
-                KDD_partial = self.knill_pulse(pi_pulse, 90, 360*self.awg_freq/self.sampling_rate*len(arb_form), self.awg_freq, tau = tau_start+tau_step*i)
-                arb_form += KDD_partial
-            x_half = self.sine(pi_half_pulse,  360*self.awg_freq/self.sampling_rate*len(arb_form), self.awg_freq)
+
+            KDD_partial = self.knill_pulse(pi_pulse, 0, phase_correction*len(arb_form), self.awg_freq, tau = tau_start+tau_step*i)
+            arb_form += KDD_partial + tau_space
+            KDD_partial = self.knill_pulse(pi_pulse, 90, phase_correction*len(arb_form), self.awg_freq, tau = tau_start+tau_step*i)
+            arb_form += KDD_partial + tau_space
+
+            KDD_partial = self.knill_pulse(pi_pulse, 0, phase_correction*len(arb_form), self.awg_freq, tau = tau_start+tau_step*i)
+            arb_form += KDD_partial + tau_space
+            KDD_partial = self.knill_pulse(pi_pulse, 90, phase_correction*len(arb_form), self.awg_freq, tau = tau_start+tau_step*i)
+            arb_form += KDD_partial
+            tau_half_space =  self.zero((tau_start+tau_step*i)/2)
+            arb_form += tau_half_space
+            x_half = self.sine(pi_half_pulse, phase_correction*len(arb_form), self.awg_freq)
             arb_form = x_half + laser_pause
         return arb_form
 
