@@ -1475,9 +1475,19 @@ class PulsedMeasurementLogic(GenericLogic):
 
                         ft_label = '{0} of data traces'.format(self._alternative_data_type)
 
-                    ax2.plot(x_axis_ft_scaled, self.signal_alt_data[1], '-o',
-                             linestyle=':', linewidth=0.5, color=colors[0],
-                             label=ft_label)
+                    if with_error:
+                        if self._alternating:
+                            yerr = np.sqrt(self.measurement_error[1]**2+self.measurement_error[2]**2)
+                        else:
+                            yerr = self.measurement_error[1]
+                        ax2.errorbar(x_axis_ft_scaled, self.signal_alt_data[1], yerr=yerr, fmt ='-o',
+                            linestyle=':', linewidth=0.5, color=colors[0],
+                            label=ft_label)
+
+                    else:
+                        ax2.plot(x_axis_ft_scaled, self.signal_alt_data[1], '-o',
+                                linestyle=':', linewidth=0.5, color=colors[0],
+                                label=ft_label)
                     if self._alternating and len(self.signal_alt_data) > 2:
                         ax2.plot(x_axis_ft_scaled, self.signal_alt_data[2], '-D',
                                  linestyle=':', linewidth=0.5, color=colors[3],
