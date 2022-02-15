@@ -466,6 +466,7 @@ class OptimizerLogic(GenericLogic):
                 # checks if new pos is within the scanner range
                 if self.z_range[0] <= result.best_values['center'] <= self.z_range[1]:
                     self.optim_pos_z = result.best_values['center']
+                    # self.optim_pos_z = self._zimage_Z_values[np.argmax(self.z_refocus_line)] #use measured max rather than fit centre
                     self.optim_sigma_z = result.best_values['sigma']
                     gauss, params = self._fit_logic.make_gaussianlinearoffset_model()
                     self.z_fit_data = gauss.eval(

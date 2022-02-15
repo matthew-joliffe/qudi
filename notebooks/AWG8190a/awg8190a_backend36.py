@@ -54,7 +54,7 @@ class AWG():
         return f"TRAC{channel}:DATA {self.segment_id},{offset},#".encode("ascii") + str(len_nbytes).encode('ascii') + str(len_bytes).encode('ascii')
 
     def correct_waveform_length(self, waveform_len):
-        # the waveform must be length 320+int*64
+        # the waveform must be length 320+int*64 and will truncate it until it fits
         
         if waveform_len < 320:
             k = 320

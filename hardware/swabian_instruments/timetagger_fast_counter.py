@@ -107,7 +107,8 @@ class TimeTaggerFastCounter(Base, FastCounterInterface):
 
         # the unit of those entries are seconds per bin. In order to get the
         # current binwidth in seonds use the get_binwidth method.
-        constraints['hardware_binwidth_list'] = [1 / 1000e6]
+        # constraints['hardware_binwidth_list'] = [1 / 1000e6] # I really don't understand why this is hardcoded like this?
+        constraints['hardware_binwidth_list'] = [1 / 1e9, 10 / 1e9,  100 / 1e9, 1000 / 1e9, 1e4 / 1e9, 1e5 / 1e9, 1e6 / 1e9, 1e7 / 1e9, 1e8 / 1e9]
 
         # TODO: think maybe about a software_binwidth_list, which will
         #      postprocess the obtained counts. These bins must be integer

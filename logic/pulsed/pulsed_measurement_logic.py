@@ -1462,6 +1462,9 @@ class PulsedMeasurementLogic(GenericLogic):
                             self._data_labels[0], x_axis_prefix, inverse_cont_var)
                         y_axis_ft_label = 'FT({0}) (arb. u.)'.format(self._data_labels[1])
                         ft_label = 'FT of data trace 1'
+
+                    elif self._alternative_data_type == 'Histogram':
+                        pass
                     else:
                         if self._data_units[0]:
                             x_axis_ft_label = '{0} ({1}{2})'.format(self._data_labels[0], x_axis_prefix,
@@ -1475,7 +1478,7 @@ class PulsedMeasurementLogic(GenericLogic):
 
                         ft_label = '{0} of data traces'.format(self._alternative_data_type)
 
-                    if with_error:
+                    if with_error and self._alternative_data_type != 'FFT':
                         if self._alternating:
                             yerr = np.sqrt(self.measurement_error[1]**2+self.measurement_error[2]**2)
                         else:
@@ -1623,6 +1626,12 @@ class PulsedMeasurementLogic(GenericLogic):
                                                               window=self.window,
                                                               base_corr=self.base_corr,
                                                               psd=self.psd)
+        elif self._alternative_data_type == 'Histogram':
+
+            histogram = np.histogram(self.signal_data[1], np.arange(0,max(self.signal_data[1])+2))
+            self.signal_alt_data[0] = histogram[1][:-1]
+            self.signal_alt_data[1] = histogram[0]
+
         else:
             self.signal_alt_data = np.zeros(self.signal_data.shape, dtype=float)
             self.signal_alt_data[0] = self.signal_data[0]
